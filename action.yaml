@@ -1,0 +1,36 @@
+name: "Test Composite Action"
+description: "A simple test composite action for learning and validation"
+
+# 입력값 정의
+inputs:
+  message:
+    description: "Message to print"
+    required: true
+  repeat:
+    description: "How many times to repeat"
+    required: false
+    default: "1"
+
+# 출력값 정의
+outputs:
+  last_message:
+    description: "The last printed message"
+    value: ${{ steps.print.outputs.last_message }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: print
+      shell: bash
+      run: |
+        echo "Running composite action..."
+        for i in $(seq 1 ${{ inputs.repeat }}); do
+          echo "[$i] ${{ inputs.message }}"
+        done
+
+        # output 설정
+        echo "last_message=${{ inputs.message }}" >> "$GITHUB_OUTPUT"
+
+branding:
+  icon: "terminal"
+  color: "blue"
